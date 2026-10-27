@@ -12,7 +12,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<!-- TAMBAHAN AUTO-UPLOAD - JANGAN HAPUS FILE LAMA -->
+
+    <script>
+// FIX AUTO - PASTI MUNCUL
+async function autoLoad(){
+  let repo = "bintanglilyshopcom/bintanglilyshop";
+  try{
+    let r = await fetch(`https://api.github.com/repos/${repo}/contents/`);
+    let files = await r.json();
+    let imgs = files.filter(f=> f.name.match(/\.(jpg|jpeg|png|webp)$/i));
+    console.log("Foto ketemu:", imgs.length);
+    if(imgs.length==0){ alert("Belum ada foto JPG di repo! Upload foto dulu bos"); return; }
+    imgs.forEach(f=>{
+      if(window.DATA && !DATA.find(d=>d.i.includes(f.name))){
+        DATA.push({n:f.name.split('.')[0], c:"Fashion", p:150000, i:f.download_url});
+      }
+    });
+    localStorage.setItem('BINTANG_PREMIUM', JSON.stringify(DATA));
+    location.reload();
+  }catch(e){
+    alert("Error: "+e.message+" - Bikin folder images dulu atau upload foto JPG ke repo utama");
+  }
+}
+// Buat tombol biar kelihatan
+let btn = document.createElement('button');
+btn.innerText = "🔄 AUTO LOAD FOTO DARI GITHUB";
+btn.className = "fixed bottom-5 right-5 bg-[#1e2a8a] text-white px-6 py-3 rounded-full font-bold shadow-2xl z-50";
+btn.onclick = autoLoad;
+document.body.appendChild(btn);
+</script>
+    <!-- TAMBAHAN AUTO-UPLOAD - JANGAN HAPUS FILE LAMA -->
 <script>
 async function autoLoadFromGithub(){
   try{

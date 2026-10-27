@@ -12,7 +12,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+<!-- TAMBAHAN AUTO-UPLOAD - JANGAN HAPUS FILE LAMA -->
+<script>
+async function autoLoadFromGithub(){
+  try{
+    let res = await fetch('https://api.github.com/repos/bintanglilyshopcom/bintanglilyshop/contents/images');
+    let files = await res.json();
+    if(!Array.isArray(files)) return;
+    let imgs = files.filter(f=>/\.(jpg|jpeg|png|webp)$/i.test(f.name));
+    imgs.forEach(f=>{
+      // cek kalau belum ada
+      if(!DATA.find(d=>d.i===f.download_url)){
+        DATA.push({n:f.name.replace(/\.[^/.]+$/,""),c:"Fashion",p:150000,i:f.download_url});
+      }
+    });
+    if(typeof render==='function'){ save(); render(); }
+  }catch(e){ console.log('Folder images belum ada / belum ada foto'); }
+}
+// jalanin otomatis 2 detik setelah web buka
+setTimeout(autoLoadFromGithub,2000);
+</script>
     <script>
         tailwind.config = {
             theme: {
